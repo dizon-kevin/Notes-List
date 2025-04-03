@@ -39,3 +39,37 @@ class _MyAppState extends State<MyApp> {
     }
     super.initState();
   }
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text ('Task', style: TextStyle(color: CupertinoColors.systemYellow),)
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               children: [
+          Row(
+            children: [
+              Text('ToDo', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30)),
+            ],
+          ),
+
+                 Expanded(child: ListView.builder(
+                     itemCount: todoList.length,
+                     itemBuilder: (context, int index){
+                       final item= todoList;
+                      return GestureDetector(
+                        onLongPress: (){
+                          showCupertinoDialog(context: context, builder: (context){
+                            return CupertinoAlertDialog(
+                              title: Text('Delete'),
+                              content: Text ('Remove ${item[index]['task']} ?'),
+                              actions: [
+                                CupertinoButton(child: Text ('Yes', style: TextStyle(color: CupertinoColors.destructiveRed),), onPressed: (){
+                                    setState(() {
+                                      item.removeAt(index);
+                                      box.put('todo', item);
+                                    });
+                                  Navigator.pop(context);
+                                }),
