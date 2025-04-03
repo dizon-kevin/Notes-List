@@ -127,3 +127,30 @@ Container(
                                 _addTask.text = "";
                                 Navigator.pop(context);
                               }),
+ CupertinoButton(child: Text ('Save'), onPressed: (){
+                               setState(() {
+                                     todoList.add({
+                                       "task" : _addTask.text,
+                                       "status" : false
+                                     });
+
+                                     box.put('todo', todoList);
+                                   });
+
+
+                                _addTask.text = "";
+                                Navigator.pop(context);
+                              }),
+                            ],
+                          );
+
+                         });
+                       })
+                     ],
+                   ),
+                 )
+               ],
+              ),
+        ));
+  }
+}
