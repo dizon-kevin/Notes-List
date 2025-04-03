@@ -107,3 +107,23 @@ class _MyAppState extends State<MyApp> {
 
                  }) ),
 
+Container(
+                   color: CupertinoColors.systemFill.withOpacity(0.1),
+                   child: Row (
+                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                     children: [
+                       Text('               '),
+                       Text('${box.get('todo').length}ToDo'),
+                       CupertinoButton(child: Icon(CupertinoIcons.square_pencil, color: CupertinoColors.systemYellow,), onPressed: () {
+                         showCupertinoDialog(context: context, builder: (context){
+                          return CupertinoAlertDialog(
+                          title: Text('Add Task'),
+                            content: CupertinoTextField(
+                              placeholder: 'Add To-Do',
+                              controller: _addTask,
+                            ),
+                            actions: [
+                              CupertinoButton(child: Text ('Close', style: TextStyle(color: CupertinoColors.destructiveRed),), onPressed: (){
+                                _addTask.text = "";
+                                Navigator.pop(context);
+                              }),
