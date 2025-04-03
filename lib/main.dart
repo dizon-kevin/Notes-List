@@ -90,3 +90,20 @@ class _MyAppState extends State<MyApp> {
                          });
 
                         },
+                        child: Container(
+                          child: CupertinoListTile(
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(item[index]['task'], style: TextStyle(decoration: item[index]['status']? TextDecoration.lineThrough : null),),
+                                  Icon(CupertinoIcons.circle_fill, size: 15, color: item[index]['status']?CupertinoColors.activeGreen: CupertinoColors.destructiveRed,)
+                                ],
+                              ),
+                            subtitle: Divider(color: CupertinoColors.systemFill.withOpacity(0.5)),
+                          ),
+                        ),
+                      );
+
+
+                 }) ),
+
