@@ -73,3 +73,20 @@ class _MyAppState extends State<MyApp> {
                                     });
                                   Navigator.pop(context);
                                 }),
+
+     CupertinoButton(child: Text ('No'), onPressed: (){
+
+                                  Navigator.pop(context);
+                                }),
+                              ],
+                            );
+                          });
+                        },
+                        onTap: (){
+
+                         setState(() {
+                           item[index]['status'] = !item[index]['status'];
+                            box.put('todo', item);
+                         });
+
+                        },
