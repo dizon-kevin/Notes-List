@@ -120,6 +120,40 @@ class _NotesAppState extends State<NotesApp> {
                     onChanged: (value) => setState(() {}),
                   ),
                 ),
+            if (pinnedNotes.isNotEmpty)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isPinnedExpanded = !isPinnedExpanded;
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                'Pinned',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                              ),
+                              Spacer(),
+                              Icon(
+                                isPinnedExpanded ? CupertinoIcons.chevron_down : CupertinoIcons.chevron_up,
+                                color: Colors.grey,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (isPinnedExpanded)
+                        ...pinnedNotes.map((note) {
+                          final int index = notes.indexOf(note);
+                          return buildNoteItem(note, index);
+                        }).toList(),
+                    ],
+                  ),
             Expanded(
               child: ListView.builder(
                 itemCount: todoList.length,
