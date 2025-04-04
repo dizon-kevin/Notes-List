@@ -15,6 +15,7 @@ void main() async {
   ));
 }
 
+
 class NotesApp extends StatefulWidget {
   @override
   State<NotesApp> createState() => _NotesAppState();
@@ -27,6 +28,7 @@ class _NotesAppState extends State<NotesApp> {
   late Box notesBox;
   bool isPinnedExpanded = true;
 
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +36,7 @@ class _NotesAppState extends State<NotesApp> {
     loadNotes();
   }
 
-  void loadNotes() {
+     void loadNotes() {
     setState(() {
       List<dynamic> rawNotes = notesBox.get('notes', defaultValue: []);
       notes = rawNotes.map((item) => Map<String, dynamic>.from(item)).toList();
@@ -89,13 +91,12 @@ class _NotesAppState extends State<NotesApp> {
     }
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> pinnedNotes =
         notes.asMap().entries.where((entry) => pinnedIndices.contains(entry.key)).map((entry) => entry.value).toList();
     List<Map<String, dynamic>> unpinnedNotes =
         notes.asMap().entries.where((entry) => !pinnedIndices.contains(entry.key)).map((entry) => entry.value).toList();
-
     return CupertinoPageScaffold(
       backgroundColor: Colors.white,
       navigationBar: CupertinoNavigationBar(
@@ -103,10 +104,9 @@ class _NotesAppState extends State<NotesApp> {
           'Notes',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        // Removed trailing button here
       ),
-      child: SafeArea(
-        child: Stack( // Use Stack to overlay the button
+       child: SafeArea(
+        child: Stack(
           children: [
             Column(
               children: [
@@ -119,7 +119,7 @@ class _NotesAppState extends State<NotesApp> {
                     onChanged: (value) => setState(() {}),
                   ),
                 ),
-                if (pinnedNotes.isNotEmpty)
+            if (pinnedNotes.isNotEmpty)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -153,7 +153,7 @@ class _NotesAppState extends State<NotesApp> {
                         }).toList(),
                     ],
                   ),
-                Expanded(
+            Expanded(
                   child: ListView.builder(
                     itemCount: unpinnedNotes.length,
                     itemBuilder: (context, index) {
@@ -165,7 +165,7 @@ class _NotesAppState extends State<NotesApp> {
                       }
 
                       final DateTime noteDate = note['date'];
-                      final String formattedDate = DateFormat('MMM d, y, h:mm a').format(noteDate);
+                      final String _ = DateFormat('MMM d, y, h:mm a').format(noteDate);
                       final String relativeDate = getRelativeDate(noteDate);
 
                       return Column(
@@ -194,7 +194,7 @@ class _NotesAppState extends State<NotesApp> {
                 ),
               ],
             ),
-            Positioned(
+                               Positioned(
               bottom: 20,
               right: 20,
               child: CupertinoButton(
@@ -257,8 +257,7 @@ class _NotesAppState extends State<NotesApp> {
       ),
     );
   }
-
-  Widget buildNoteItem(Map<String, dynamic> note, int index) {
+            Widget buildNoteItem(Map<String, dynamic> note, int index) {
     final DateTime noteDate = note['date'];
     final String formattedDate = DateFormat('MMM d, y, h:mm a').format(noteDate);
 
