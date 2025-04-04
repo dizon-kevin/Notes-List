@@ -92,33 +92,34 @@ class _NotesAppState extends State<NotesApp> {
     }
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> pinnedNotes =
         notes.asMap().entries.where((entry) => pinnedIndices.contains(entry.key)).map((entry) => entry.value).toList();
     List<Map<String, dynamic>> unpinnedNotes =
         notes.asMap().entries.where((entry) => !pinnedIndices.contains(entry.key)).map((entry) => entry.value).toList();
-  @override
-  Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: Colors.white,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
-          'Task',
-          style: TextStyle(color: CupertinoColors.systemYellow),
+          'Notes',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
-      child: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       child: SafeArea(
+        child: Stack(
           children: [
-            Row(
+            Column(
               children: [
-                Text(
-                  'ToDo',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 30),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: CupertinoSearchTextField(
+                    controller: searchController,
+                    placeholder: 'Search Notes',
+                    style: TextStyle(color: Colors.black),
+                    onChanged: (value) => setState(() {}),
+                  ),
                 ),
-              ],
-            ),
             Expanded(
               child: ListView.builder(
                 itemCount: todoList.length,
