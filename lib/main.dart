@@ -41,7 +41,7 @@ class _NotesAppState extends State<NotesApp> {
     setState(() {
       List<dynamic> rawNotes = notesBox.get('notes', defaultValue: []);
       notes = rawNotes.map((item) => Map<String, dynamic>.from(item)).toList();
-      pinnedIndices = List<int>.from(notesBox.get('pinned', defaultValue: [])); /
+      pinnedIndices = List<int>.from(notesBox.get('pinned', defaultValue: []));
     });
   }
 
@@ -258,64 +258,77 @@ class _NotesAppState extends State<NotesApp> {
       ),
     );
   }
-            Container(
-              color: CupertinoColors.systemFill.withOpacity(0.1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('               '),
-                  Text('${(box.get('todo') ?? []).length} ToDo'),
-                  CupertinoButton(
-                    child: Icon(
-                      CupertinoIcons.square_pencil,
-                      color: CupertinoColors.systemYellow,
-                    ),
-                    onPressed: () {
-                      showCupertinoDialog(
-                        context: context,
-                        builder: (context) {
-                          return CupertinoAlertDialog(
-                            title: Text('Add Task'),
-                            content: CupertinoTextField(
-                              placeholder: 'Add To-Do',
-                              controller: _addTask,
-                            ),
-                            actions: [
-                              CupertinoButton(
-                                child: Text(
-                                  'Close',
-                                  style: TextStyle(
-                                      color: CupertinoColors.destructiveRed),
-                                ),
-                                onPressed: () {
-                                  _addTask.text = "";
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              CupertinoButton(
-                                child: Text('Save'),
-                                onPressed: () {
-                                  setState(() {
-                                    todoList.add({
-                                      "task": _addTask.text,
-                                      "status": false
-                                    });
-                                    box.put('todo', todoList);
-                                  });
+            Widget buildNoteItem(Map<String, dynamic> note, int index) {
+    final DateTime noteDate = note['date'];
+    final String formattedDate = DateFormat('MMM d, y, h:mm a').format(noteDate);
 
-                                  _addTask.text = "";
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  )
+    return GestureDetector(
+      onLongPress: () {
+        showCupertinoDialog(
+          context: context,
+          builder: (context) => CupertinoAlertDialog(
+            title: Text('Delete Note?', style: TextStyle(color: Colors.black)),
+            actions: [
+              CupertinoDialogAction(
+                child: Text('Delete', style: TextStyle(color: CupertinoColors.destructiveRed)),
+                onPressed: () {
+                  deleteNote(index);
+                  Navigator.pop(context);
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text('Cancel', style: TextStyle(color: Colors.black)),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (pinnedIndices.contains(index))
+              Icon(
+                CupertinoIcons.lock_fill,
+                color: Colors.grey,
+                size: 20,
+              ),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note['title'],
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  if (note['tag'].isNotEmpty)
+                    Text(
+                      note['tag'],
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                  Text(
+                    formattedDate,
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
                 ],
               ),
-            )
+            ),
+            IconButton(
+              icon: Icon(
+                pinnedIndices.contains(index) ? CupertinoIcons.pin_fill : CupertinoIcons.pin,
+                color: pinnedIndices.contains(index) ? Colors.blue : Colors.grey,
+              ),
+              onPressed: () => togglePin(index),
+            ),
           ],
         ),
       ),
