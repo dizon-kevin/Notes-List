@@ -195,60 +195,69 @@ class _NotesAppState extends State<NotesApp> {
                 ),
               ],
             ),
-                                onPressed: () {
-                                  setState(() {
-                                    item.removeAt(index);
-                                    box.put('todo', item);
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              CupertinoButton(
-                                child: Text('No'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    onTap: () {
-                      setState(() {
-                        item[index]['status'] = !item[index]['status'];
-                        box.put('todo', item);
-                      });
-                    },
-                    child: Container(
-                      child: CupertinoListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                               Positioned(
+              bottom: 20,
+              right: 20,
+              child: CupertinoButton(
+                padding: EdgeInsets.all(15),
+                color: Colors.transparent, // Make the button transparent
+                child: Icon(
+                  CupertinoIcons.square_pencil,
+                  color: CupertinoColors.systemYellow, // Color the icon yellow
+                  size: 25,
+                ),
+                onPressed: () {
+                  showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      TextEditingController titleController = TextEditingController();
+                      TextEditingController tagController = TextEditingController();
+
+                      return CupertinoAlertDialog(
+                        title: Text('New Note', style: TextStyle(color: Colors.black)),
+                        content: Column(
                           children: [
-                            Text(
-                              item[index]['task'],
-                              style: TextStyle(
-                                  decoration: item[index]['status']
-                                      ? TextDecoration.lineThrough
-                                      : null),
+                            CupertinoTextField(
+                              placeholder: 'Title',
+                              controller: titleController,
+                              style: TextStyle(color: Colors.black),
+                              decoration: BoxDecoration(color: Colors.white),
                             ),
-                            Icon(
-                              CupertinoIcons.circle_fill,
-                              size: 15,
-                              color: item[index]['status']
-                                  ? CupertinoColors.activeGreen
-                                  : CupertinoColors.destructiveRed,
-                            )
+                            SizedBox(height: 10),
+                            CupertinoTextField(
+                              placeholder: 'Tag (e.g., #work, #travel)',
+                              controller: tagController,
+                              style: TextStyle(color: Colors.black),
+                              decoration: BoxDecoration(color: Colors.white),
+                            ),
                           ],
                         ),
-                        subtitle: Divider(
-                            color: CupertinoColors.systemFill.withOpacity(0.5)),
-                      ),
-                    ),
+                        actions: [
+                          CupertinoDialogAction(
+                            child: Text('Cancel', style: TextStyle(color: CupertinoColors.destructiveRed)),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          CupertinoDialogAction(
+                            child: Text('Save', style: TextStyle(color: Colors.black)),
+                            onPressed: () {
+                              if (titleController.text.isNotEmpty) {
+                                addNote(titleController.text, tagController.text);
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
             Container(
               color: CupertinoColors.systemFill.withOpacity(0.1),
               child: Row(
