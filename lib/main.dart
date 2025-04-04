@@ -155,25 +155,46 @@ class _NotesAppState extends State<NotesApp> {
                     ],
                   ),
             Expanded(
-              child: ListView.builder(
-                itemCount: todoList.length,
-                itemBuilder: (context, int index) {
-                  final item = todoList;
-                  return GestureDetector(
-                    onLongPress: () {
-                      showCupertinoDialog(
-                        context: context,
-                        builder: (context) {
-                          return CupertinoAlertDialog(
-                            title: Text('Delete'),
-                            content: Text('Remove ${item[index]['task']}?'),
-                            actions: [
-                              CupertinoButton(
-                                child: Text(
-                                  'Yes',
-                                  style: TextStyle(
-                                      color: CupertinoColors.destructiveRed),
-                                ),
+                  child: ListView.builder(
+                    itemCount: unpinnedNotes.length,
+                    itemBuilder: (context, index) {
+                      final note = unpinnedNotes[index];
+                      final int originalIndex = notes.indexOf(note);
+                      if (searchController.text.isNotEmpty &&
+                          !note['title'].toLowerCase().contains(searchController.text.toLowerCase())) {
+                        return Container();
+                      }
+
+                      final DateTime noteDate = note['date'];
+                      final String formattedDate = DateFormat('MMM d, y, h:mm a').format(noteDate);
+                      final String relativeDate = getRelativeDate(noteDate);
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (index == 0 || getRelativeDate(unpinnedNotes[index - 1]['date']) != relativeDate)
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(
+                                relativeDate,
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                              ),
+                            ),
+                          buildNoteItem(note, originalIndex),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    '${notes.length} Notes',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
                                 onPressed: () {
                                   setState(() {
                                     item.removeAt(index);
