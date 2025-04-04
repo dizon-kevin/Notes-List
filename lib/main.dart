@@ -2,29 +2,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox('test'); // Ensure box is opened before using it
+  await Hive.openBox('notesBox');
 
   runApp(CupertinoApp(
     debugShowCheckedModeBanner: false,
-    home: MyApp(),
+    home: NotesApp(),
   ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+
+class NotesApp extends StatefulWidget {
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<NotesApp> createState() => _NotesAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  List<dynamic> todoList = [];
-  TextEditingController _addTask = TextEditingController();
-  late Box box;
+class _NotesAppState extends State<NotesApp> {
+  List<Map<String, dynamic>> notes = [];
+  List<int> pinnedIndices = [];
+  TextEditingController searchController = TextEditingController();
+  late Box notesBox;
+  bool isPinnedExpanded = true;
 
   @override
   void initState() {
