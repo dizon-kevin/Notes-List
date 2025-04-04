@@ -29,18 +29,75 @@ class _NotesAppState extends State<NotesApp> {
   late Box notesBox;
   bool isPinnedExpanded = true;
 
+
   @override
   void initState() {
     super.initState();
-    box = Hive.box('test');
+    notesBox = Hive.box('notesBox');
+    loadNotes();
+  }
 
-    try {
-      todoList = box.get('todo', defaultValue: []); // Prevents null values
-    } catch (e) {
-      todoList = [];
+     void loadNotes() {
+    setState(() {
+      List<dynamic> rawNotes = notesBox.get('notes', defaultValue: []);
+      notes = rawNotes.map((item) => Map<String, dynamic>.from(item)).toList();
+      pinnedIndices = List<int>.from(notesBox.get('pinned', defaultValue: [])); /
+    });
+  }
+
+  void addNote(String title, String tag) {
+    setState(() {
+      notes.add({
+        'title': title,
+        'tag': tag,
+        'date': DateTime.now(),
+      });
+      notesBox.put('notes', notes);
+    });
+  }
+
+  void deleteNote(int index) {
+    setState(() {
+      notes.removeAt(index);
+      pinnedIndices.remove(index);
+      notesBox.put('notes', notes);
+      notesBox.put('pinned', pinnedIndices);
+    });
+  }
+
+  void togglePin(int index) {
+    setState(() {
+      if (pinnedIndices.contains(index)) {
+        pinnedIndices.remove(index);
+      } else {
+        pinnedIndices.add(index);
+      }
+      notesBox.put('pinned', pinnedIndices);
+    });
+  }
+
+  String getRelativeDate(DateTime date) {
+    DateTime now = DateTime.now();
+    DateTime yesterday = now.subtract(Duration(days: 1));
+    DateTime sevenDaysAgo = now.subtract(Duration(days: 7));
+
+    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+      return 'Today';
+    } else if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+      return 'Yesterday';
+    } else if (date.isAfter(sevenDaysAgo)) {
+      return 'Previous 7 Days';
+    } else {
+      return 'Older';
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, dynamic>> pinnedNotes =
+        notes.asMap().entries.where((entry) => pinnedIndices.contains(entry.key)).map((entry) => entry.value).toList();
+    List<Map<String, dynamic>> unpinnedNotes =
+        notes.asMap().entries.where((entry) => !pinnedIndices.contains(entry.key)).map((entry) => entry.value).toList();
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
