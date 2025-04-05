@@ -270,20 +270,37 @@ class _NotesAppState extends State<NotesApp> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (pinnedIndices.contains(index))
-                Icon(
-                  CupertinoIcons.lock_fill,
-                  color: Colors.grey,
-                  size: 20,
+                Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.lock_fill,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                    SizedBox(width: 3),
+                  ],
                 ),
-              SizedBox(width: 8),
+              if (!pinnedIndices.contains(index)) SizedBox(width: 23),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      note['title'],
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                    Row(
+                      children: [
+                        Text(
+                          note['title'],
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                        if (pinnedIndices.contains(index))
+                          Row(children: [
+                            SizedBox(width: 3),
+                            Text(
+                              "Locked",
+                              style: TextStyle(color: Colors.grey, fontSize: 12),
+                            ),
+                          ])
+                      ],
                     ),
                     if (note['tag'].isNotEmpty)
                       Text(
