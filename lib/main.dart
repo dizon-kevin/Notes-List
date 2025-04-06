@@ -14,8 +14,7 @@ void main() async {
     print("Hive initialized successfully.");
   } catch (e) {
     print("Error initializing Hive: $e");
-    // Handle the error appropriately (e.g., show an error message).
-    return; // Stop the app if Hive fails to initialize.
+    return;
   }
 
   runApp(CupertinoApp(
@@ -99,6 +98,10 @@ class _NotesAppState extends State<NotesApp> {
   }
 
   void updateNote(int index, String title, String tag) {
+    if (lockedIndices.contains(index)) {
+      print("Note is locked, and cannot be edited");
+      return;
+    }
     setState(() {
       notes[index]['title'] = title;
       notes[index]['tag'] = tag;
@@ -329,16 +332,20 @@ class _NotesAppState extends State<NotesApp> {
       },
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => EditNotePage(
-                note: note,
-                index: index,
-                updateNote: updateNote,
+          if (!lockedIndices.contains(index)) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => EditNotePage(
+                  note: note,
+                  index: index,
+                  updateNote: updateNote,
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            print("Note is locked, and cannot be edited");
+          }
         },
         onLongPress: () {
           showCupertinoModalPopup(
