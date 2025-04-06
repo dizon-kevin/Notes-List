@@ -1,11 +1,10 @@
-// main.dart
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
-import 'edit_note_page.dart'; // Import the new page
+import 'edit_note_page.dart';
+import 'add_note_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -231,7 +230,12 @@ class _NotesAppState extends State<NotesApp> {
                   size: 25,
                 ),
                 onPressed: () {
-                  showNoteDialog(context, addNote, null, null, null);
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => AddNotePage(addNote: addNote),
+                    ),
+                  );
                 },
               ),
             ),
@@ -259,7 +263,6 @@ class _NotesAppState extends State<NotesApp> {
       },
       child: GestureDetector(
         onTap: () {
-          // Navigate to the edit page
           Navigator.push(
             context,
             CupertinoPageRoute(
