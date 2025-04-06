@@ -1,8 +1,11 @@
+// main.dart
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'edit_note_page.dart'; // Import the new page
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -256,7 +259,17 @@ class _NotesAppState extends State<NotesApp> {
       },
       child: GestureDetector(
         onTap: () {
-          showNoteDialog(context, updateNote, index, note['title'], note['tag']);
+          // Navigate to the edit page
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => EditNotePage(
+                note: note,
+                index: index,
+                updateNote: updateNote,
+              ),
+            ),
+          );
         },
         child: Container(
           padding: EdgeInsets.all(12),
@@ -274,7 +287,7 @@ class _NotesAppState extends State<NotesApp> {
                   children: [
                     Icon(
                       CupertinoIcons.lock_fill,
-                      color: Colors.grey,
+                      color: Colors.black,
                       size: 20,
                     ),
                     SizedBox(width: 3),
@@ -297,7 +310,7 @@ class _NotesAppState extends State<NotesApp> {
                             SizedBox(width: 3),
                             Text(
                               "Locked",
-                              style: TextStyle(color: Colors.grey, fontSize: 12),
+                              style: TextStyle(color: Colors.black, fontSize: 12),
                             ),
                           ])
                       ],
@@ -305,11 +318,11 @@ class _NotesAppState extends State<NotesApp> {
                     if (note['tag'].isNotEmpty)
                       Text(
                         note['tag'],
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                        style: TextStyle(color: Colors.black, fontSize: 14),
                       ),
                     Text(
                       formattedDate,
-                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                      style: TextStyle(color: Colors.black, fontSize: 12),
                     ),
                   ],
                 ),
