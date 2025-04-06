@@ -25,6 +25,7 @@ class NotesApp extends StatefulWidget {
 class _NotesAppState extends State<NotesApp> {
   List<Map<String, dynamic>> notes = [];
   List<int> pinnedIndices = [];
+  List<int> lockedIndices = [];
   TextEditingController searchController = TextEditingController();
   late Box notesBox;
   bool isPinnedExpanded = true;
@@ -41,6 +42,7 @@ class _NotesAppState extends State<NotesApp> {
       List<dynamic> rawNotes = notesBox.get('notes', defaultValue: []);
       notes = rawNotes.map((item) => Map<String, dynamic>.from(item)).toList();
       pinnedIndices = List<int>.from(notesBox.get('pinned', defaultValue: []));
+      lockedIndices = List<int>.from(notesBox.get('locked', defaultValue: []));
     });
   }
 
@@ -68,8 +70,10 @@ class _NotesAppState extends State<NotesApp> {
     setState(() {
       notes.removeAt(index);
       pinnedIndices.remove(index);
+      lockedIndices.remove(index);
       notesBox.put('notes', notes);
       notesBox.put('pinned', pinnedIndices);
+      notesBox.put('locked', lockedIndices);
     });
   }
 
@@ -81,6 +85,17 @@ class _NotesAppState extends State<NotesApp> {
         pinnedIndices.add(index);
       }
       notesBox.put('pinned', pinnedIndices);
+    });
+  }
+
+  void toggleLock(int index) {
+    setState(() {
+      if (lockedIndices.contains(index)) {
+        lockedIndices.remove(index);
+      } else {
+        lockedIndices.add(index);
+      }
+      notesBox.put('locked', lockedIndices);
     });
   }
 
@@ -274,6 +289,35 @@ class _NotesAppState extends State<NotesApp> {
             ),
           );
         },
+        onLongPress: () {
+          showCupertinoModalPopup(
+            context: context,
+            builder: (BuildContext context) => CupertinoActionSheet(
+              actions: <Widget>[
+                CupertinoActionSheetAction(
+                  child: Text(pinnedIndices.contains(index) ? 'Unpin Note' : 'Pin Note'),
+                  onPressed: () {
+                    togglePin(index);
+                    Navigator.pop(context);
+                  },
+                ),
+                CupertinoActionSheetAction(
+                  child: Text(lockedIndices.contains(index) ? 'Unlock Note' : 'Lock Note'),
+                  onPressed: () {
+                    toggleLock(index);
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          );
+        },
         child: Container(
           padding: EdgeInsets.all(12),
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -285,7 +329,7 @@ class _NotesAppState extends State<NotesApp> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (pinnedIndices.contains(index))
+              if (lockedIndices.contains(index))
                 Row(
                   children: [
                     Icon(
@@ -296,7 +340,7 @@ class _NotesAppState extends State<NotesApp> {
                     SizedBox(width: 3),
                   ],
                 ),
-              if (!pinnedIndices.contains(index)) SizedBox(width: 23),
+              if (!lockedIndices.contains(index)) SizedBox(width: 23),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +352,7 @@ class _NotesAppState extends State<NotesApp> {
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                         ),
-                        if (pinnedIndices.contains(index))
+                        if (lockedIndices.contains(index))
                           Row(children: [
                             SizedBox(width: 3),
                             Text(
