@@ -8,8 +8,15 @@ import 'add_note_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox('notesBox');
+  try {
+    await Hive.initFlutter();
+    await Hive.openBox('notesBox');
+    print("Hive initialized successfully.");
+  } catch (e) {
+    print("Error initializing Hive: $e");
+    // Handle the error appropriately (e.g., show an error message).
+    return; // Stop the app if Hive fails to initialize.
+  }
 
   runApp(CupertinoApp(
     debugShowCheckedModeBanner: false,
@@ -33,17 +40,50 @@ class _NotesAppState extends State<NotesApp> {
   @override
   void initState() {
     super.initState();
-    notesBox = Hive.box('notesBox');
-    loadNotes();
+    try {
+      notesBox = Hive.box('notesBox');
+      loadNotes();
+      updateRelativeDates();
+      print("NotesApp initState successful.");
+    } catch (e) {
+      print("Error in NotesApp initState: $e");
+    }
   }
 
   void loadNotes() {
     setState(() {
-      List<dynamic> rawNotes = notesBox.get('notes', defaultValue: []);
-      notes = rawNotes.map((item) => Map<String, dynamic>.from(item)).toList();
-      pinnedIndices = List<int>.from(notesBox.get('pinned', defaultValue: []));
-      lockedIndices = List<int>.from(notesBox.get('locked', defaultValue: []));
+      try {
+        if (notesBox.isOpen) {
+          List<dynamic> rawNotes = notesBox.get('notes', defaultValue: []);
+          notes = rawNotes.map((item) => Map<String, dynamic>.from(item)).toList();
+          pinnedIndices = List<int>.from(notesBox.get('pinned', defaultValue: []));
+          lockedIndices = List<int>.from(notesBox.get('locked', defaultValue: []));
+          print("Notes loaded successfully.");
+        } else {
+          print("Error: NotesBox is not open.");
+        }
+      } catch (e) {
+        print("Error loading notes: $e");
+      }
     });
+  }
+
+  void saveNotes() {
+    try {
+      if (notesBox.isOpen) {
+        notesBox.put('notes', notes);
+        notesBox.put('pinned', pinnedIndices);
+        notesBox.put('locked', lockedIndices);
+        print("notes box content: ${notesBox.get('notes')}");
+        print("pinned box content: ${notesBox.get('pinned')}");
+        print("locked box content: ${notesBox.get('locked')}");
+        print("Notes saved successfully.");
+      } else {
+        print("Error: NotesBox is not open.");
+      }
+    } catch (e) {
+      print("Error saving notes: $e");
+    }
   }
 
   void addNote(String title, String tag) {
@@ -53,7 +93,8 @@ class _NotesAppState extends State<NotesApp> {
         'tag': tag,
         'date': DateTime.now(),
       });
-      notesBox.put('notes', notes);
+      saveNotes();
+      updateRelativeDates();
     });
   }
 
@@ -62,7 +103,8 @@ class _NotesAppState extends State<NotesApp> {
       notes[index]['title'] = title;
       notes[index]['tag'] = tag;
       notes[index]['date'] = DateTime.now();
-      notesBox.put('notes', notes);
+      saveNotes();
+      updateRelativeDates();
     });
   }
 
@@ -71,9 +113,8 @@ class _NotesAppState extends State<NotesApp> {
       notes.removeAt(index);
       pinnedIndices.remove(index);
       lockedIndices.remove(index);
-      notesBox.put('notes', notes);
-      notesBox.put('pinned', pinnedIndices);
-      notesBox.put('locked', lockedIndices);
+      saveNotes();
+      updateRelativeDates();
     });
   }
 
@@ -84,7 +125,8 @@ class _NotesAppState extends State<NotesApp> {
       } else {
         pinnedIndices.add(index);
       }
-      notesBox.put('pinned', pinnedIndices);
+      saveNotes();
+      updateRelativeDates();
     });
   }
 
@@ -95,7 +137,8 @@ class _NotesAppState extends State<NotesApp> {
       } else {
         lockedIndices.add(index);
       }
-      notesBox.put('locked', lockedIndices);
+      saveNotes();
+      updateRelativeDates();
     });
   }
 
@@ -113,6 +156,15 @@ class _NotesAppState extends State<NotesApp> {
     } else {
       return 'Older';
     }
+  }
+
+  void updateRelativeDates() {
+    setState(() {
+      for (var note in notes) {
+        note['relativeDate'] = getRelativeDate(note['date']);
+      }
+    });
+    saveNotes();
   }
 
   @override
@@ -201,15 +253,14 @@ class _NotesAppState extends State<NotesApp> {
                         return Container();
                       }
 
-                      final DateTime noteDate = note['date'];
-                      final String _ = DateFormat('MMM d, y, h:mm a').format(noteDate);
-                      final String relativeDate = getRelativeDate(noteDate);
+                      final String relativeDate = note['relativeDate'];
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (index == 0 ||
-                              getRelativeDate(unpinnedNotes[index - 1]['date']) != relativeDate)
+                              unpinnedNotes[index]['relativeDate'] !=
+                                  (index > 0 ? unpinnedNotes[index - 1]['relativeDate'] : null))
                             Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Text(
