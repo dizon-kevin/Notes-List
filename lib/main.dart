@@ -203,7 +203,7 @@ class _NotesAppState extends State<NotesApp> {
                   _buildTeamMemberAction('Cruz, John Eric'),
                   _buildTeamMemberAction('Dizon, Kevin'),
                   _buildTeamMemberAction('Juanatas Cris, Luriz Jenzelle'),
-                  _buildTeamMemberAction('Macapagal Marc, Laurence'),
+                  _buildTeamMemberAction('Macapagal Marc, Lawrence'),
                   _buildTeamMemberAction('Venasquez, Charles'),
                 ],
                 cancelButton: CupertinoActionSheetAction(
