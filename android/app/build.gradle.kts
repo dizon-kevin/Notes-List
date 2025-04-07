@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.devops.noteapp"
+    namespace = "com.notes.devops"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
     ndkVersion = flutter.ndkVersion
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.devops.noteapp"
+        applicationId = "com.notes.devops"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = System.getenv("CM_BUILD_ID")?.toInt()
