@@ -1,4 +1,4 @@
-# notes_list
+# DevOps Notes
 
 A new Flutter project.
 

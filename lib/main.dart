@@ -189,7 +189,7 @@ class _NotesAppState extends State<NotesApp> {
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           'Notes',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
         ),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
@@ -213,7 +213,7 @@ class _NotesAppState extends State<NotesApp> {
               ),
             );
           },
-          child: const Icon(CupertinoIcons.ellipsis, color: Colors.black),
+          child: const Icon(CupertinoIcons.profile_circled, color: Colors.yellow, size: 30,),
         ),
       ),
       child: SafeArea(
@@ -224,7 +224,7 @@ class _NotesAppState extends State<NotesApp> {
                 Padding(
                   padding: EdgeInsets.all(10),
                   child: CupertinoSearchTextField(
-                    controller: searchController,
+                    controller: searchController, itemColor: Colors.black,
                     placeholder: 'Search Notes',
                     style: TextStyle(color: Colors.black),
                     onChanged: (value) => setState(() {}),
