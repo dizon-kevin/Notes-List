@@ -191,6 +191,30 @@ class _NotesAppState extends State<NotesApp> {
           'Notes',
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: () {
+            showCupertinoModalPopup(
+              context: context,
+              builder: (BuildContext context) => CupertinoActionSheet(
+                title: const Text('Team Members', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                message: const Text('Developed by:', style: TextStyle(color: Colors.grey)),
+                actions: <CupertinoActionSheetAction>[
+                  _buildTeamMemberAction('Cruz, John Eric'),
+                  _buildTeamMemberAction('Dizon, Kevin'),
+                  _buildTeamMemberAction('Juanatas Cris, Luriz Jenzelle'),
+                  _buildTeamMemberAction('Macapagal Marc, Laurence'),
+                  _buildTeamMemberAction('Venasquez, Charles'),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  child: const Text('Cancel', style: TextStyle(color: CupertinoColors.destructiveRed)),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            );
+          },
+          child: const Icon(CupertinoIcons.ellipsis, color: Colors.black),
+        ),
       ),
       child: SafeArea(
         child: Stack(
@@ -311,6 +335,13 @@ class _NotesAppState extends State<NotesApp> {
           ],
         ),
       ),
+    );
+  }
+
+  CupertinoActionSheetAction _buildTeamMemberAction(String name) {
+    return CupertinoActionSheetAction(
+      child: Text(name, style: TextStyle(fontWeight: FontWeight.w500)),
+      onPressed: () => Navigator.pop(context),
     );
   }
 
