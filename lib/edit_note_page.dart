@@ -66,6 +66,7 @@ class _EditNotePageState extends State<EditNotePage> {
               CupertinoTextField(
                 controller: _titleController,
                 placeholder: 'Title',
+                placeholderStyle: TextStyle(color: Colors.grey),
                 style: TextStyle(color: Colors.black),
                 decoration: BoxDecoration(color: Colors.white),
               ),
@@ -73,6 +74,7 @@ class _EditNotePageState extends State<EditNotePage> {
               CupertinoTextField(
                 controller: _tagController,
                 placeholder: 'Tag (e.g., #work, #travel)',
+                placeholderStyle: TextStyle(color: Colors.grey),
                 style: TextStyle(color: Colors.black),
                 decoration: BoxDecoration(color: Colors.white),
               ),
